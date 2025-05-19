@@ -1,3 +1,4 @@
+
 const imagePairs = [
   ["imgs/1.png", "imgs/2.png"],
   ["imgs/3.png", "imgs/4.png"]
@@ -8,6 +9,7 @@ let pairMap = {};
 let revealedCards = [];
 let matchedCards = 0;
 let startTime = Date.now();
+let moveCount = 0;
 
 imagePairs.forEach(([a, b]) => {
   allImages.push(a, b);
@@ -32,18 +34,14 @@ setInterval(updateTimer, 1000);
 
 const board = document.getElementById("game-board");
 shuffle(allImages).forEach(image => {
-  const card = document.createElement("button");
+  const card = document.createElement("div");
   card.className = "card";
   card.dataset.image = image;
 
   card.innerHTML = `
     <div class="card-inner">
-      <div class="card-front">
-        <img src="${image}" />
-      </div>
-      <div class="card-back">
-        <img src="imgs/back.png" />
-      </div>
+      <div class="card-front" style="background-image: url('${image}')"></div>
+      <div class="card-back"></div>
     </div>
   `;
 
@@ -52,21 +50,33 @@ shuffle(allImages).forEach(image => {
 
     card.classList.add("revealed");
     revealedCards.push(card);
+    moveCount++;
 
     if (revealedCards.length === 2) {
       const [first, second] = revealedCards;
       if (pairMap[first.dataset.image] === second.dataset.image) {
         matchedCards += 2;
         revealedCards = [];
+
+        if (matchedCards === allImages.length) {
+          const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+          document.getElementById("victory-details").textContent =
+            `Tempo: ${timeTaken}s | Movimentos: ${moveCount}`;
+          document.getElementById("victory-message").classList.remove("hidden");
+        }
       } else {
         setTimeout(() => {
           first.classList.remove("revealed");
           second.classList.remove("revealed");
           revealedCards = [];
-        }, 2000); // Delay para ver a carta antes de esconder
+        }, 2000);
       }
     }
   });
 
   board.appendChild(card);
 });
+
+function restartGame() {
+  location.reload();
+}

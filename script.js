@@ -31,7 +31,8 @@ const logos = [
 
 let selectedPairs = [];
 let timerInterval = null;
-let numberOfPairs = 10; // valor padrão
+let numberOfPairs = 10;
+let currentBackLogo = null;
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -43,6 +44,7 @@ function shuffle(array) {
 
 function startGame() {
   selectedPairs = shuffle([...imagePairs]).slice(0, numberOfPairs);
+  currentBackLogo = logos[Math.floor(Math.random() * logos.length)];
 
   const allImages = [];
   const pairMap = {};
@@ -68,7 +70,6 @@ function startGame() {
   timerDisplay.textContent = "Tempo: 0s";
   movesDisplay.textContent = "Movimentos: 0";
 
-  // Limpa o cronômetro anterior
   if (timerInterval) clearInterval(timerInterval);
   timerInterval = setInterval(() => {
     const elapsed = Math.floor((Date.now() - startTime) / 1000);
@@ -76,21 +77,17 @@ function startGame() {
   }, 1000);
 
   const shuffledImages = shuffle(allImages);
-  const columns = Math.ceil(Math.sqrt(shuffledImages.length));
   const cardElements = [];
 
-  shuffledImages.forEach((image, index) => {
+  shuffledImages.forEach((image) => {
     const card = document.createElement("div");
     card.className = "card";
     card.dataset.image = image;
 
-    const columnIndex = index % columns;
-    const logo = logos[columnIndex % logos.length];
-
     card.innerHTML = `
       <div class="card-inner">
         <div class="card-front" style="background-image: url('${image}')"></div>
-        <div class="card-back" style="background-image: url('${logo}')"></div>
+        <div class="card-back" style="background-image: url('${currentBackLogo}')"></div>
       </div>
     `;
 
@@ -133,7 +130,6 @@ function startGame() {
     cardElements.push(card);
   });
 
-  // Adiciona ao tabuleiro
   cardElements.forEach(card => board.appendChild(card));
 }
 

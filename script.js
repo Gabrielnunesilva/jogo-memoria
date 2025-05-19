@@ -22,7 +22,7 @@ const imagePairs = [
   ["imgs/21.png", "imgs/2025.png"],
 ];
 
-const logos = [
+const backLogos = [
   "imgs/logo1.png",
   "imgs/logo2.png",
   "imgs/logo3.png",
@@ -31,7 +31,7 @@ const logos = [
 
 let selectedPairs = [];
 let timerInterval = null;
-let numberOfPairs = 10; // valor padrão
+let selectedBack = "";
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -41,8 +41,10 @@ function shuffle(array) {
   return array;
 }
 
-function startGame() {
-  selectedPairs = shuffle([...imagePairs]).slice(0, numberOfPairs);
+function startGame(pairCount = 10) {
+  clearInterval(timerInterval);
+  selectedPairs = shuffle([...imagePairs]).slice(0, pairCount);
+  selectedBack = backLogos[Math.floor(Math.random() * backLogos.length)];
 
   const allImages = [];
   const pairMap = {};
@@ -68,37 +70,25 @@ function startGame() {
   timerDisplay.textContent = "Tempo: 0s";
   movesDisplay.textContent = "Movimentos: 0";
 
-  // Limpa o cronômetro anterior
-  if (timerInterval) clearInterval(timerInterval);
   timerInterval = setInterval(() => {
     const elapsed = Math.floor((Date.now() - startTime) / 1000);
     timerDisplay.textContent = `Tempo: ${elapsed}s`;
   }, 1000);
 
-  const shuffledImages = shuffle(allImages);
-  const columns = Math.ceil(Math.sqrt(shuffledImages.length));
-  const cardElements = [];
-
-  shuffledImages.forEach((image, index) => {
+  shuffle(allImages).forEach((image) => {
     const card = document.createElement("div");
     card.className = "card";
     card.dataset.image = image;
 
-    const columnIndex = index % columns;
-    const logo = logos[columnIndex % logos.length];
-
     card.innerHTML = `
       <div class="card-inner">
         <div class="card-front" style="background-image: url('${image}')"></div>
-        <div class="card-back" style="background-image: url('${logo}')"></div>
+        <div class="card-back" style="background-image: url('${selectedBack}')"></div>
       </div>
     `;
 
     card.addEventListener("click", () => {
-      if (
-        card.classList.contains("revealed") ||
-        revealedCards.length === 2
-      )
+      if (card.classList.contains("revealed") || revealedCards.length === 2)
         return;
 
       card.classList.add("revealed");
@@ -130,25 +120,12 @@ function startGame() {
       }
     });
 
-    cardElements.push(card);
+    board.appendChild(card);
   });
-
-  // Adiciona ao tabuleiro
-  cardElements.forEach(card => board.appendChild(card));
 }
 
 function restartGame() {
-  startGame();
+  startGame(selectedPairs.length);
 }
 
-function setPairs(n) {
-  numberOfPairs = n;
-  startGame();
-}
-
-window.onload = () => {
-  document.getElementById("btn-5").addEventListener("click", () => setPairs(5));
-  document.getElementById("btn-10").addEventListener("click", () => setPairs(10));
-  document.getElementById("btn-20").addEventListener("click", () => setPairs(20));
-  startGame();
-};
+window.onload = () => startGame();

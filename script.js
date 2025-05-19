@@ -22,7 +22,8 @@ const imagePairs = [
   ["imgs/21.png", "imgs/2025.png"],
 ];
 
-// Função para embaralhar array
+let currentPairCount = 10; // padrão
+
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -31,14 +32,12 @@ function shuffle(array) {
   return array;
 }
 
-// Seleciona 10 pares aleatórios
-let selectedPairs = [];
+function startGame(pairCount = currentPairCount) {
+  currentPairCount = pairCount;
 
-function startGame() {
-  selectedPairs = shuffle([...imagePairs]).slice(0, 10);
-
-  let allImages = [];
-  let pairMap = {};
+  const selectedPairs = shuffle([...imagePairs]).slice(0, pairCount);
+  const allImages = [];
+  const pairMap = {};
   let revealedCards = [];
   let matchedCards = 0;
   let moves = 0;
@@ -61,7 +60,6 @@ function startGame() {
   timerDisplay.textContent = "Tempo: 0s";
   movesDisplay.textContent = "Movimentos: 0";
 
-  // Timer
   let timerInterval = setInterval(() => {
     const elapsed = Math.floor((Date.now() - startTime) / 1000);
     timerDisplay.textContent = `Tempo: ${elapsed}s`;
@@ -80,11 +78,7 @@ function startGame() {
     `;
 
     card.addEventListener("click", () => {
-      if (
-        card.classList.contains("revealed") ||
-        revealedCards.length === 2
-      )
-        return;
+      if (card.classList.contains("revealed") || revealedCards.length === 2) return;
 
       card.classList.add("revealed");
       revealedCards.push(card);
@@ -94,7 +88,6 @@ function startGame() {
         movesDisplay.textContent = `Movimentos: ${moves}`;
 
         const [first, second] = revealedCards;
-
         if (pairMap[first.dataset.image] === second.dataset.image) {
           matchedCards += 2;
           revealedCards = [];
@@ -102,7 +95,6 @@ function startGame() {
           if (matchedCards === allImages.length) {
             clearInterval(timerInterval);
             const elapsed = Math.floor((Date.now() - startTime) / 1000);
-
             victoryDetails.textContent = `Tempo: ${elapsed}s | Movimentos: ${moves}`;
             victoryMessage.classList.remove("hidden");
           }
@@ -111,7 +103,7 @@ function startGame() {
             first.classList.remove("revealed");
             second.classList.remove("revealed");
             revealedCards = [];
-          }, 2000);
+          }, 1000);
         }
       }
     });
@@ -120,10 +112,8 @@ function startGame() {
   });
 }
 
-// Função para reiniciar o jogo
 function restartGame() {
-  startGame();
+  startGame(currentPairCount);
 }
 
-// Começa o jogo ao carregar a página
-window.onload = startGame;
+window.onload = () => startGame();

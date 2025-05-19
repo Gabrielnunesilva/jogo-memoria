@@ -1,9 +1,8 @@
-const image = [
-  "imagem/1.png",
-  "imagem/2.png",
-  "imagem/3.png",
-  "imagem/4.png",
+const imagePairs = [
+  ["imagem/1.png", "imagem/2.png"],
+  ["imagem/3.png", "imagem/4.png"],
 ];
+
 const board = document.getElementById("board");
 const timerEl = document.getElementById("timer");
 let cards = [];

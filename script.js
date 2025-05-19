@@ -4,8 +4,6 @@ const imagePairs = [
   ["imgs/3.png", "imgs/4.png"]
 ];
 
-img.src = "imgs/back.png";
-
 
 let allImages = [];
 let pairMap = {};

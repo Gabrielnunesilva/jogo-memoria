@@ -100,3 +100,16 @@ h1 {
 #victory-message button:hover {
   background-color: #3e8e41;
 }
+
+#pair-selector {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+#pair-selector button {
+  margin: 0 5px;
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+

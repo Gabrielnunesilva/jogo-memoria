@@ -1,79 +1,37 @@
-body {
-  font-family: sans-serif;
-  text-align: center;
-  background: #f0f0f0;
-  margin: 0;
-  padding: 20px;
-}
-
-#game-board {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 10px;
-  max-width: 600px;
-  margin: 0 auto;
-  position: relative;
-}
-
-.card {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1;
-  cursor: pointer;
-  perspective: 1000px;
-}
-
-.card-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transition: transform 0.6s;
-  transform-style: preserve-3d;
-}
-
-.card.revealed .card-inner {
-  transform: rotateY(180deg);
-}
-
-.card-front,
-.card-back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 8px;
-  backface-visibility: hidden;
-  background-size: cover;
-  background-position: center;
+#victory-message {
+  position: fixed;        /* Fica fixo na tela */
   top: 0;
   left: 0;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  width: 100vw;           /* Ocupa a largura da tela */
+  height: 100vh;          /* Ocupa a altura da tela */
+  background: rgba(0, 0, 0, 0.6); /* Fundo preto semi-transparente */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 1.5rem;
+  z-index: 1000;          /* Na frente de tudo */
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-.card-front {
-  transform: rotateY(180deg);
-  /* A imagem da frente é configurada inline no JS */
-}
-
-.card-back {
-  background-image: url("imgs/back.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-color: #ccc; /* fallback se a imagem não carregar */
-}
-  
-.hidden {
+#victory-message.hidden {
   display: none;
 }
 
-#victory-message {
+#victory-message button {
   margin-top: 20px;
-  background: white;
-  border: 2px solid #4CAF50;
-  padding: 20px;
-  border-radius: 10px;
-  max-width: 300px;
-  margin-left: auto;
-  margin-right: auto;
-  box-shadow: 0 0 10px #4CAF50;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  background-color: #4caf50;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+#victory-message button:hover {
+  background-color: #45a049;
 }

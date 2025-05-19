@@ -2,11 +2,12 @@ body {
   font-family: sans-serif;
   text-align: center;
   background: #f0f0f0;
+  margin: 0;
+  padding: 0;
 }
-
 #game-board {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
   gap: 10px;
   padding: 20px;
   max-width: 600px;
@@ -14,21 +15,19 @@ body {
 }
 
 .card {
-  aspect-ratio: 1;
+  position: relative;
   width: 100%;
-  perspective: 1000px;
-  border: none;
-  padding: 0;
-  background: none;
+  aspect-ratio: 1 / 1;
   cursor: pointer;
+  perspective: 1000px;
 }
 
 .card-inner {
+  position: relative;
   width: 100%;
   height: 100%;
   transition: transform 0.6s;
   transform-style: preserve-3d;
-  position: relative;
 }
 
 .card.revealed .card-inner {
@@ -39,16 +38,10 @@ body {
   position: absolute;
   width: 100%;
   height: 100%;
-  backface-visibility: hidden;
-}
-
-.card-front img,
-.card-back img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
   border-radius: 8px;
-  pointer-events: none;
+  background-size: cover;
+  background-position: center;
+  backface-visibility: hidden;
 }
 
 .card-front {
@@ -56,21 +49,10 @@ body {
 }
 
 .card-back {
-  transform: rotateY(0deg);
+  background-image: url("imgs/back.png");
+  background-size: cover;
+  background-position: center;
 }
-
-#victory-message {
-  margin-top: 20px;
-  text-align: center;
-}
-
-#victory-message.hidden {
+.hidden {
   display: none;
 }
-
-#victory-message button {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-}
-

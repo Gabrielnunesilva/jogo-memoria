@@ -58,3 +58,19 @@ body {
 .card-back {
   transform: rotateY(0deg);
 }
+
+#victory-message {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#victory-message.hidden {
+  display: none;
+}
+
+#victory-message button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+

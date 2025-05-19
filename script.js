@@ -22,22 +22,18 @@ const imagePairs = [
   ["imgs/21.png", "imgs/2025.png"],
 ];
 
-let timerInterval = null;
+const backImages = [
+  "imgs/logo1.png",
+  "imgs/logo2.png",
+  "imgs/logo3.png",
+  "imgs/logo4.png"
+];
 
-let currentPairCount = 10; // padrão
+let selectedPairs = [];
+let cardsPerRow = 5; // padrão (ajustado dinamicamente)
 
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
-
-function startGame(pairCount = currentPairCount) {
-  currentPairCount = pairCount;
-
-  const selectedPairs = shuffle([...imagePairs]).slice(0, pairCount);
+function startGame(pairCount = 10) {
+  selectedPairs = shuffle([...imagePairs]).slice(0, pairCount);
   const allImages = [];
   const pairMap = {};
   let revealedCards = [];
@@ -51,6 +47,10 @@ function startGame(pairCount = currentPairCount) {
     pairMap[b] = a;
   });
 
+  if (pairCount === 5) cardsPerRow = 5;
+  else if (pairCount === 10) cardsPerRow = 5;
+  else if (pairCount === 20) cardsPerRow = 6;
+
   const board = document.getElementById("game-board");
   const timerDisplay = document.getElementById("timer");
   const movesDisplay = document.getElementById("moves");
@@ -58,33 +58,34 @@ function startGame(pairCount = currentPairCount) {
   const victoryDetails = document.getElementById("victory-details");
 
   board.innerHTML = "";
+  board.style.gridTemplateColumns = `repeat(${cardsPerRow}, 100px)`;
   victoryMessage.classList.add("hidden");
   timerDisplay.textContent = "Tempo: 0s";
   movesDisplay.textContent = "Movimentos: 0";
 
-  if (timerInterval) {
-    clearInterval(timerInterval);
-  }
-  timerInterval = setInterval(() => {
+  let timerInterval = setInterval(() => {
     const elapsed = Math.floor((Date.now() - startTime) / 1000);
     timerDisplay.textContent = `Tempo: ${elapsed}s`;
   }, 1000);
 
-
-  shuffle(allImages).forEach(image => {
+  shuffle(allImages).forEach((image, index) => {
     const card = document.createElement("div");
     card.className = "card";
     card.dataset.image = image;
 
+    const column = index % cardsPerRow;
+    const backImage = backImages[column % backImages.length];
+
     card.innerHTML = `
       <div class="card-inner">
         <div class="card-front" style="background-image: url('${image}')"></div>
-        <div class="card-back"></div>
+        <div class="card-back" style="background-image: url('${backImage}')"></div>
       </div>
     `;
 
     card.addEventListener("click", () => {
-      if (card.classList.contains("revealed") || revealedCards.length === 2) return;
+      if (card.classList.contains("revealed") || revealedCards.length === 2)
+        return;
 
       card.classList.add("revealed");
       revealedCards.push(card);
@@ -92,8 +93,8 @@ function startGame(pairCount = currentPairCount) {
       if (revealedCards.length === 2) {
         moves++;
         movesDisplay.textContent = `Movimentos: ${moves}`;
-
         const [first, second] = revealedCards;
+
         if (pairMap[first.dataset.image] === second.dataset.image) {
           matchedCards += 2;
           revealedCards = [];
@@ -109,7 +110,7 @@ function startGame(pairCount = currentPairCount) {
             first.classList.remove("revealed");
             second.classList.remove("revealed");
             revealedCards = [];
-          }, 1000);
+          }, 2000);
         }
       }
     });
@@ -119,7 +120,20 @@ function startGame(pairCount = currentPairCount) {
 }
 
 function restartGame() {
-  startGame(currentPairCount);
+  startGame();
 }
 
-window.onload = () => startGame();
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+// Botões de seleção de par
+document.getElementById("btn-5").addEventListener("click", () => startGame(5));
+document.getElementById("btn-10").addEventListener("click", () => startGame(10));
+document.getElementById("btn-20").addEventListener("click", () => startGame(20));
+
+window.onload = () => startGame(10);

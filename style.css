@@ -72,9 +72,35 @@ h1 {
 }
 
 #victory-message {
-  margin-top: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 
 #victory-message.hidden {
   display: none;
+}
+
+#victory-message h2,
+#victory-message p {
+  margin: 10px 0;
+}
+
+#victory-message button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background: #28a745;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
 }

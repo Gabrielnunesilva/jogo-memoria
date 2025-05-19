@@ -1,115 +1,87 @@
-/* estilo básico para o jogo */
 body {
   font-family: Arial, sans-serif;
   text-align: center;
+  background-color: #f4f4f4;
   margin: 0;
-  padding: 20px;
-  background: #f0f0f0;
+  padding: 0;
 }
 
 h1 {
-  margin-bottom: 10px;
+  margin-top: 20px;
 }
 
-#timer, #moves {
-  font-size: 18px;
-  margin: 5px 0;
+#controls {
+  margin: 10px;
 }
 
-#game-board {
-  width: 600px;
-  max-width: 90vw;
-  margin: 20px auto;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 15px;
-  perspective: 800px;
-}
-
-.card {
-  width: 100%;
-  padding-top: 100%; /* quadrado responsivo */
-  position: relative;
+button {
+  margin: 5px;
+  padding: 10px 15px;
+  font-size: 16px;
   cursor: pointer;
 }
 
+#game-board {
+  display: grid;
+  gap: 10px;
+  justify-content: center;
+  margin: 20px auto;
+}
+
+.card {
+  width: 100px;
+  height: 100px;
+  perspective: 600px;
+}
+
 .card-inner {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100%;
+  height: 100%;
   transition: transform 0.6s;
   transform-style: preserve-3d;
+  position: relative;
 }
 
 .card.revealed .card-inner {
   transform: rotateY(180deg);
 }
 
-.card-front, .card-back {
-  position: absolute;
+.card-front,
+.card-back {
   width: 100%;
   height: 100%;
+  position: absolute;
   border-radius: 8px;
+  background-size: cover;
+  background-position: center;
   backface-visibility: hidden;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .card-front {
-  background-size: cover;
-  background-position: center;
   transform: rotateY(180deg);
 }
 
 .card-back {
-  background: #2d89ef;  /* cor do verso */
-  background-image: repeating-radial-gradient(circle at center, #fad902, #0d0d0c 15px);
+  background-color: #ccc;
 }
 
-/* Estilo para a mensagem de vitória */
 #victory-message {
-  position: fixed; /* fixa na tela toda */
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: rgba(0,0,0,0.7); /* semi-transparente */
-  color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.6rem;
-  z-index: 10000; /* muito acima */
-  padding: 20px;
-  box-sizing: border-box;
-  text-align: center;
-}
-
-#victory-message.hidden {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 30px;
+  border: 2px solid #333;
+  border-radius: 12px;
+  z-index: 10;
   display: none;
 }
 
-#victory-message button {
-  margin-top: 20px;
-  font-size: 1.2rem;
-  padding: 10px 25px;
-  background-color: #4caf50;
-  border: none;
-  border-radius: 8px;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s;
+#victory-message.show {
+  display: block;
 }
 
-#victory-message button:hover {
-  background-color: #3e8e41;
+.hidden {
+  display: none;
 }
-
-#pair-selector {
-  margin-bottom: 15px;
-  text-align: center;
-}
-
-#pair-selector button {
-  margin: 0 5px;
-  padding: 8px 16px;
-  font-size: 16px;
-  cursor: pointer;
-}
-

@@ -22,17 +22,14 @@ const imagePairs = [
   ["imgs/21.png", "imgs/2025.png"],
 ];
 
-const backLogos = [
+const backImages = [
   "imgs/logo1.png",
   "imgs/logo2.png",
   "imgs/logo3.png",
-  "imgs/logo4.png",
+  "imgs/logo4.png"
 ];
 
-let selectedPairs = [];
-let timerInterval = null;
-let selectedBack = "";
-
+// Função para embaralhar array
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -41,17 +38,18 @@ function shuffle(array) {
   return array;
 }
 
-function startGame(pairCount = 10) {
-  clearInterval(timerInterval);
-  selectedPairs = shuffle([...imagePairs]).slice(0, pairCount);
-  selectedBack = backLogos[Math.floor(Math.random() * backLogos.length)];
+let selectedPairs = [];
+let timerInterval = null;
 
-  const allImages = [];
-  const pairMap = {};
+function startGame(numPairs = 10) {
+  selectedPairs = shuffle([...imagePairs]).slice(0, numPairs);
+
+  let allImages = [];
+  let pairMap = {};
   let revealedCards = [];
   let matchedCards = 0;
   let moves = 0;
-  const startTime = Date.now();
+  let startTime = Date.now();
 
   selectedPairs.forEach(([a, b]) => {
     allImages.push(a, b);
@@ -66,16 +64,22 @@ function startGame(pairCount = 10) {
   const victoryDetails = document.getElementById("victory-details");
 
   board.innerHTML = "";
-  victoryMessage.classList.add("hidden");
+  victoryMessage.classList.add("hidden"); // garante que começa escondido
   timerDisplay.textContent = "Tempo: 0s";
   movesDisplay.textContent = "Movimentos: 0";
 
+  if (timerInterval) clearInterval(timerInterval);
+
+  // Timer
   timerInterval = setInterval(() => {
     const elapsed = Math.floor((Date.now() - startTime) / 1000);
     timerDisplay.textContent = `Tempo: ${elapsed}s`;
   }, 1000);
 
-  shuffle(allImages).forEach((image) => {
+  // Escolhe uma imagem back aleatória para este jogo
+  const backImage = backImages[Math.floor(Math.random() * backImages.length)];
+
+  shuffle(allImages).forEach((image, index) => {
     const card = document.createElement("div");
     card.className = "card";
     card.dataset.image = image;
@@ -83,13 +87,15 @@ function startGame(pairCount = 10) {
     card.innerHTML = `
       <div class="card-inner">
         <div class="card-front" style="background-image: url('${image}')"></div>
-        <div class="card-back" style="background-image: url('${selectedBack}')"></div>
+        <div class="card-back" style="background-image: url('${backImage}')"></div>
       </div>
     `;
 
     card.addEventListener("click", () => {
-      if (card.classList.contains("revealed") || revealedCards.length === 2)
-        return;
+      if (
+        card.classList.contains("revealed") ||
+        revealedCards.length === 2
+      ) return;
 
       card.classList.add("revealed");
       revealedCards.push(card);
@@ -107,6 +113,7 @@ function startGame(pairCount = 10) {
           if (matchedCards === allImages.length) {
             clearInterval(timerInterval);
             const elapsed = Math.floor((Date.now() - startTime) / 1000);
+
             victoryDetails.textContent = `Tempo: ${elapsed}s | Movimentos: ${moves}`;
             victoryMessage.classList.remove("hidden");
           }
@@ -124,13 +131,14 @@ function startGame(pairCount = 10) {
   });
 }
 
+// Função para reiniciar o jogo
 function restartGame() {
-  startGame(selectedPairs.length);
+  startGame();
 }
 
+// Começa o jogo ao carregar a página
 window.onload = () => {
   const victoryMessage = document.getElementById("victory-message");
-  victoryMessage.classList.add("hidden"); // garante que começa escondido
+  victoryMessage.classList.add("hidden"); // escondido ao carregar
   startGame();
 };
-

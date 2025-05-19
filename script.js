@@ -22,34 +22,40 @@ const imagePairs = [
   ["imgs/21.png", "imgs/2025.png"],
 ];
 
-const backImages = [
+const logos = [
   "imgs/logo1.png",
   "imgs/logo2.png",
   "imgs/logo3.png",
-  "imgs/logo4.png"
+  "imgs/logo4.png",
 ];
 
 let selectedPairs = [];
-let cardsPerRow = 5; // padrão (ajustado dinamicamente)
+let timerInterval = null;
+let numberOfPairs = 10; // valor padrão
 
-function startGame(pairCount = 10) {
-  selectedPairs = shuffle([...imagePairs]).slice(0, pairCount);
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function startGame() {
+  selectedPairs = shuffle([...imagePairs]).slice(0, numberOfPairs);
+
   const allImages = [];
   const pairMap = {};
   let revealedCards = [];
   let matchedCards = 0;
   let moves = 0;
-  let startTime = Date.now();
+  const startTime = Date.now();
 
   selectedPairs.forEach(([a, b]) => {
     allImages.push(a, b);
     pairMap[a] = b;
     pairMap[b] = a;
   });
-
-  if (pairCount === 5) cardsPerRow = 5;
-  else if (pairCount === 10) cardsPerRow = 5;
-  else if (pairCount === 20) cardsPerRow = 6;
 
   const board = document.getElementById("game-board");
   const timerDisplay = document.getElementById("timer");
@@ -58,33 +64,41 @@ function startGame(pairCount = 10) {
   const victoryDetails = document.getElementById("victory-details");
 
   board.innerHTML = "";
-  board.style.gridTemplateColumns = `repeat(${cardsPerRow}, 100px)`;
   victoryMessage.classList.add("hidden");
   timerDisplay.textContent = "Tempo: 0s";
   movesDisplay.textContent = "Movimentos: 0";
 
-  let timerInterval = setInterval(() => {
+  // Limpa o cronômetro anterior
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
     const elapsed = Math.floor((Date.now() - startTime) / 1000);
     timerDisplay.textContent = `Tempo: ${elapsed}s`;
   }, 1000);
 
-  shuffle(allImages).forEach((image, index) => {
+  const shuffledImages = shuffle(allImages);
+  const columns = Math.ceil(Math.sqrt(shuffledImages.length));
+  const cardElements = [];
+
+  shuffledImages.forEach((image, index) => {
     const card = document.createElement("div");
     card.className = "card";
     card.dataset.image = image;
 
-    const column = index % cardsPerRow;
-    const backImage = backImages[column % backImages.length];
+    const columnIndex = index % columns;
+    const logo = logos[columnIndex % logos.length];
 
     card.innerHTML = `
       <div class="card-inner">
         <div class="card-front" style="background-image: url('${image}')"></div>
-        <div class="card-back" style="background-image: url('${backImage}')"></div>
+        <div class="card-back" style="background-image: url('${logo}')"></div>
       </div>
     `;
 
     card.addEventListener("click", () => {
-      if (card.classList.contains("revealed") || revealedCards.length === 2)
+      if (
+        card.classList.contains("revealed") ||
+        revealedCards.length === 2
+      )
         return;
 
       card.classList.add("revealed");
@@ -93,6 +107,7 @@ function startGame(pairCount = 10) {
       if (revealedCards.length === 2) {
         moves++;
         movesDisplay.textContent = `Movimentos: ${moves}`;
+
         const [first, second] = revealedCards;
 
         if (pairMap[first.dataset.image] === second.dataset.image) {
@@ -115,25 +130,25 @@ function startGame(pairCount = 10) {
       }
     });
 
-    board.appendChild(card);
+    cardElements.push(card);
   });
+
+  // Adiciona ao tabuleiro
+  cardElements.forEach(card => board.appendChild(card));
 }
 
 function restartGame() {
   startGame();
 }
 
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
+function setPairs(n) {
+  numberOfPairs = n;
+  startGame();
 }
 
-// Botões de seleção de par
-document.getElementById("btn-5").addEventListener("click", () => startGame(5));
-document.getElementById("btn-10").addEventListener("click", () => startGame(10));
-document.getElementById("btn-20").addEventListener("click", () => startGame(20));
-
-window.onload = () => startGame(10);
+window.onload = () => {
+  document.getElementById("btn-5").addEventListener("click", () => setPairs(5));
+  document.getElementById("btn-10").addEventListener("click", () => setPairs(10));
+  document.getElementById("btn-20").addEventListener("click", () => setPairs(20));
+  startGame();
+};

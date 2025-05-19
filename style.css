@@ -3,21 +3,22 @@ body {
   text-align: center;
   background: #f0f0f0;
   margin: 0;
-  padding: 0;
+  padding: 20px;
 }
+
 #game-board {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 10px;
-  padding: 20px;
   max-width: 600px;
   margin: 0 auto;
+  position: relative;
 }
 
 .card {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1;
   cursor: pointer;
   perspective: 1000px;
 }
@@ -34,25 +35,45 @@ body {
   transform: rotateY(180deg);
 }
 
-.card-front, .card-back {
+.card-front,
+.card-back {
   position: absolute;
   width: 100%;
   height: 100%;
   border-radius: 8px;
+  backface-visibility: hidden;
   background-size: cover;
   background-position: center;
-  backface-visibility: hidden;
+  top: 0;
+  left: 0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
 .card-front {
   transform: rotateY(180deg);
+  /* A imagem da frente é configurada inline no JS */
 }
 
 .card-back {
   background-image: url("imgs/back.png");
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
+  background-color: #ccc; /* fallback se a imagem não carregar */
 }
+  
 .hidden {
   display: none;
+}
+
+#victory-message {
+  margin-top: 20px;
+  background: white;
+  border: 2px solid #4CAF50;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 0 10px #4CAF50;
 }

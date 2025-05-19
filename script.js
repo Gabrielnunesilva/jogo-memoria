@@ -1,6 +1,8 @@
-const images = [
-  "https://via.placeholder.com/200/ff4444?text=A",
-  "https://via.placeholder.com/200/44ff44?text=B"
+const image = [
+  "imagem/1.png",
+  "imagem/2.png",
+  "imagem/3.png",
+  "imagem/4.png",
 ];
 const board = document.getElementById("board");
 const timerEl = document.getElementById("timer");

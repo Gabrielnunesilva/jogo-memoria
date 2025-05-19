@@ -1,20 +1,23 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Jogo da Memória</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <h1>Jogo da Memória</h1>
-  <p id="timer">Tempo: 0s</p>
-  <p id="moves">Movimentos: 0</p>
 
-  <div class="controls">
+  <div id="controls">
     <button onclick="startGame(5)">5 Pares</button>
     <button onclick="startGame(10)">10 Pares</button>
     <button onclick="startGame(20)">20 Pares</button>
+  </div>
+
+  <div id="stats">
+    <span id="timer">Tempo: 0s</span>
+    <span id="moves">Movimentos: 0</span>
   </div>
 
   <div id="game-board"></div>
@@ -22,7 +25,7 @@
   <div id="victory-message" class="hidden">
     <h2>Você venceu!</h2>
     <p id="victory-details"></p>
-    <button onclick="restartGame()">Jogar novamente</button>
+    <button onclick="startGame()">Jogar Novamente</button>
   </div>
 
   <script src="script.js"></script>

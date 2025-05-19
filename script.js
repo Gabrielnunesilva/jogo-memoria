@@ -32,84 +32,98 @@ function shuffle(array) {
 }
 
 // Seleciona 10 pares aleatórios
-const selectedPairs = shuffle([...imagePairs]).slice(0, 10);
+let selectedPairs = [];
 
-let allImages = [];
-let pairMap = {};
-let revealedCards = [];
-let matchedCards = 0;
-let moves = 0;
-let startTime = Date.now();
+function startGame() {
+  selectedPairs = shuffle([...imagePairs]).slice(0, 10);
 
-selectedPairs.forEach(([a, b]) => {
-  allImages.push(a, b);
-  pairMap[a] = b;
-  pairMap[b] = a;
-});
+  let allImages = [];
+  let pairMap = {};
+  let revealedCards = [];
+  let matchedCards = 0;
+  let moves = 0;
+  let startTime = Date.now();
 
-function updateTimer() {
-  const elapsed = Math.floor((Date.now() - startTime) / 1000);
-  document.getElementById("timer").textContent = `Tempo: ${elapsed}s`;
-}
-
-setInterval(updateTimer, 1000);
-
-const board = document.getElementById("game-board");
-const victoryMessage = document.getElementById("victory-message");
-const victoryDetails = document.getElementById("victory-details");
-const movesElement = document.getElementById("moves");
-
-board.innerHTML = ""; // limpa o tabuleiro
-victoryMessage.classList.add("hidden");
-movesElement.textContent = `Movimentos: 0`;
-
-shuffle(allImages).forEach(image => {
-  const card = document.createElement("div");
-  card.className = "card";
-  card.dataset.image = image;
-
-  card.innerHTML = `
-    <div class="card-inner">
-      <div class="card-front" style="background-image: url('${image}')"></div>
-      <div class="card-back"></div>
-    </div>
-  `;
-
-  card.addEventListener("click", () => {
-    if (card.classList.contains("revealed") || revealedCards.length === 2) return;
-
-    card.classList.add("revealed");
-    revealedCards.push(card);
-
-    if (revealedCards.length === 2) {
-      moves++;
-      movesElement.textContent = `Movimentos: ${moves}`;
-
-      const [first, second] = revealedCards;
-
-      if (pairMap[first.dataset.image] === second.dataset.image) {
-        matchedCards += 2;
-        revealedCards = [];
-
-        // Verifica se venceu
-        if (matchedCards === allImages.length) {
-          const elapsed = Math.floor((Date.now() - startTime) / 1000);
-          victoryDetails.textContent = `Tempo: ${elapsed}s | Movimentos: ${moves}`;
-          victoryMessage.classList.remove("hidden");
-        }
-      } else {
-        setTimeout(() => {
-          first.classList.remove("revealed");
-          second.classList.remove("revealed");
-          revealedCards = [];
-        }, 2000);
-      }
-    }
+  selectedPairs.forEach(([a, b]) => {
+    allImages.push(a, b);
+    pairMap[a] = b;
+    pairMap[b] = a;
   });
 
-  board.appendChild(card);
-});
+  const board = document.getElementById("game-board");
+  const timerDisplay = document.getElementById("timer");
+  const movesDisplay = document.getElementById("moves");
+  const victoryMessage = document.getElementById("victory-message");
+  const victoryDetails = document.getElementById("victory-details");
 
-function restartGame() {
-  location.reload();
+  board.innerHTML = "";
+  victoryMessage.classList.add("hidden");
+  timerDisplay.textContent = "Tempo: 0s";
+  movesDisplay.textContent = "Movimentos: 0";
+
+  // Timer
+  let timerInterval = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    timerDisplay.textContent = `Tempo: ${elapsed}s`;
+  }, 1000);
+
+  shuffle(allImages).forEach(image => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.dataset.image = image;
+
+    card.innerHTML = `
+      <div class="card-inner">
+        <div class="card-front" style="background-image: url('${image}')"></div>
+        <div class="card-back"></div>
+      </div>
+    `;
+
+    card.addEventListener("click", () => {
+      if (
+        card.classList.contains("revealed") ||
+        revealedCards.length === 2
+      )
+        return;
+
+      card.classList.add("revealed");
+      revealedCards.push(card);
+
+      if (revealedCards.length === 2) {
+        moves++;
+        movesDisplay.textContent = `Movimentos: ${moves}`;
+
+        const [first, second] = revealedCards;
+
+        if (pairMap[first.dataset.image] === second.dataset.image) {
+          matchedCards += 2;
+          revealedCards = [];
+
+          if (matchedCards === allImages.length) {
+            clearInterval(timerInterval);
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+
+            victoryDetails.textContent = `Tempo: ${elapsed}s | Movimentos: ${moves}`;
+            victoryMessage.classList.remove("hidden");
+          }
+        } else {
+          setTimeout(() => {
+            first.classList.remove("revealed");
+            second.classList.remove("revealed");
+            revealedCards = [];
+          }, 2000);
+        }
+      }
+    });
+
+    board.appendChild(card);
+  });
 }
+
+// Função para reiniciar o jogo
+function restartGame() {
+  startGame();
+}
+
+// Começa o jogo ao carregar a página
+window.onload = startGame;

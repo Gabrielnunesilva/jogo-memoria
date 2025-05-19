@@ -29,10 +29,10 @@ const backImages = [
   "imgs/logo4.png"
 ];
 
-// Embaralha o array
+// Função para embaralhar arrays
 function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+  for (let i = array.length -1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i +1));
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
@@ -62,16 +62,8 @@ function startGame(numPairs = 10) {
   const victoryMessage = document.getElementById("victory-message");
   const victoryDetails = document.getElementById("victory-details");
 
-  // Ajusta grid columns conforme número de pares para um layout bom
-  let columns = 5;
-  if (numPairs <= 5) {
-    columns = 5;
-  } else if (numPairs <= 10) {
-    columns = 5;
-  } else {
-    columns = 5;
-  }
-  board.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+  // Ajuste da grade para 5 colunas fixas
+  board.style.gridTemplateColumns = `repeat(5, 1fr)`;
 
   board.innerHTML = "";
   victoryMessage.classList.add("hidden");
@@ -86,7 +78,7 @@ function startGame(numPairs = 10) {
     timerDisplay.textContent = `Tempo: ${elapsed}s`;
   }, 1000);
 
-  // Seleciona aleatoriamente um backImage para este jogo
+  // Seleciona aleatoriamente um backImage para o verso das cartas
   const backImage = backImages[Math.floor(Math.random() * backImages.length)];
 
   shuffle(allImages).forEach(image => {
@@ -141,7 +133,7 @@ function startGame(numPairs = 10) {
   });
 }
 
-// Começa o jogo ao carregar a página
+// Inicia jogo padrão ao carregar a página
 window.onload = () => {
   const victoryMessage = document.getElementById("victory-message");
   victoryMessage.classList.add("hidden");

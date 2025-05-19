@@ -1,4 +1,3 @@
-
 const imagePairs = [
   ["imgs/1.png", "imgs/1983.png"],
   ["imgs/2.png", "imgs/1984.png"],
@@ -56,7 +55,13 @@ function updateTimer() {
 setInterval(updateTimer, 1000);
 
 const board = document.getElementById("game-board");
+const victoryMessage = document.getElementById("victory-message");
+const victoryDetails = document.getElementById("victory-details");
+const movesElement = document.getElementById("moves");
+
 board.innerHTML = ""; // limpa o tabuleiro
+victoryMessage.classList.add("hidden");
+movesElement.textContent = `Movimentos: 0`;
 
 shuffle(allImages).forEach(image => {
   const card = document.createElement("div");
@@ -78,7 +83,7 @@ shuffle(allImages).forEach(image => {
 
     if (revealedCards.length === 2) {
       moves++;
-      document.getElementById("moves").textContent = `Movimentos: ${moves}`;
+      movesElement.textContent = `Movimentos: ${moves}`;
 
       const [first, second] = revealedCards;
 
@@ -89,10 +94,8 @@ shuffle(allImages).forEach(image => {
         // Verifica se venceu
         if (matchedCards === allImages.length) {
           const elapsed = Math.floor((Date.now() - startTime) / 1000);
-          setTimeout(() => {
-            alert(`Você venceu!\nTempo: ${elapsed}s\nMovimentos: ${moves}`);
-            location.reload(); // reinicia o jogo
-          }, 500);
+          victoryDetails.textContent = `Tempo: ${elapsed}s | Movimentos: ${moves}`;
+          victoryMessage.classList.remove("hidden");
         }
       } else {
         setTimeout(() => {
@@ -106,3 +109,7 @@ shuffle(allImages).forEach(image => {
 
   board.appendChild(card);
 });
+
+function restartGame() {
+  location.reload();
+}

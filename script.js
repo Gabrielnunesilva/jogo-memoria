@@ -128,4 +128,9 @@ function restartGame() {
   startGame(selectedPairs.length);
 }
 
-window.onload = () => startGame();
+window.onload = () => {
+  const victoryMessage = document.getElementById("victory-message");
+  victoryMessage.classList.add("hidden"); // garante que começa escondido
+  startGame();
+};
+

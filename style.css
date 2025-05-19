@@ -1,75 +1,87 @@
 body {
-  font-family: sans-serif;
+  font-family: Arial, sans-serif;
   text-align: center;
-  background: #f9f9f9;
+  background: #f0f0f0;
   margin: 0;
   padding: 20px;
 }
-h1 {
-  margin-bottom: 10px;
-}
-.controls {
+
+#controls {
   margin-bottom: 15px;
 }
+
 button {
-  padding: 10px 20px;
+  padding: 10px 15px;
   margin: 0 5px;
   font-size: 16px;
   cursor: pointer;
 }
+
+#stats {
+  margin-bottom: 15px;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
 #game-board {
   display: grid;
-  justify-content: center;
-  gap: 10px;
-  margin: 20px auto;
-  max-width: 800px;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+  max-width: 600px;
+  margin: 0 auto;
 }
+
 .card {
   width: 100px;
-  height: 100px;
-  perspective: 1000px;
+  height: 140px;
+  perspective: 600px;
+  cursor: pointer;
 }
+
 .card-inner {
   width: 100%;
   height: 100%;
   position: relative;
+  transition: transform 0.5s;
   transform-style: preserve-3d;
-  transition: transform 0.6s;
 }
+
 .card.revealed .card-inner {
   transform: rotateY(180deg);
 }
-.card-front,
-.card-back {
+
+.card-front, .card-back {
   position: absolute;
   width: 100%;
   height: 100%;
+  border-radius: 10px;
   background-size: cover;
   background-position: center;
-  border-radius: 8px;
   backface-visibility: hidden;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
-.card-back {
-  background-color: #333;
-}
+
 .card-front {
   transform: rotateY(180deg);
 }
-#victory-message {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.8);
-  color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
+
+.card-back {
+  background-color: #ccc;
 }
+
 .hidden {
   display: none;
+}
+
+#victory-message {
+  margin-top: 20px;
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
 }

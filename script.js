@@ -1,18 +1,17 @@
-
 const imagePairs = [
   ["imgs/1.png", "imgs/2.png"],
   ["imgs/3.png", "imgs/4.png"]
 ];
 
-
-let allImages = [];
+let allCards = [];
 let pairMap = {};
 let revealedCards = [];
 let matchedCards = 0;
 let startTime = Date.now();
+const backImage = "imgs/back.png";
 
 imagePairs.forEach(([a, b]) => {
-  allImages.push(a, b);
+  allCards.push(a, b);
   pairMap[a] = b;
   pairMap[b] = a;
 });
@@ -33,38 +32,45 @@ function updateTimer() {
 setInterval(updateTimer, 1000);
 
 const board = document.getElementById("game-board");
-shuffle(allImages).forEach(image => {
-  const card = document.createElement("div");
-  card.className = "card";
-  card.dataset.image = image;
 
-  card.innerHTML = `
-    <div class="card-inner">
-      <div class="card-front" style="background-image: url('${image}')"></div>
-      <div class="card-back"></div>
-    </div>
-  `;
+shuffle(allCards).forEach(image => {
+  const button = document.createElement("button");
+  button.className = "card";
+  button.dataset.image = image;
 
-  card.addEventListener("click", () => {
-    if (card.classList.contains("revealed") || revealedCards.length === 2) return;
+  const img = document.createElement("img");
+  img.src = backImage;
+  img.alt = "Carta";
+  img.style.width = "100%";
+  img.style.height = "100%";
+  img.style.objectFit = "cover";
+  button.appendChild(img);
 
-    card.classList.add("revealed");
-    revealedCards.push(card);
+  button.addEventListener("click", () => {
+    if (revealedCards.length === 2 || button.classList.contains("matched") || img.src.includes(image)) return;
+
+    img.src = image;
+    revealedCards.push(button);
 
     if (revealedCards.length === 2) {
       const [first, second] = revealedCards;
+      const img1 = first.querySelector("img");
+      const img2 = second.querySelector("img");
+
       if (pairMap[first.dataset.image] === second.dataset.image) {
-        matchedCards += 2;
+        first.classList.add("matched");
+        second.classList.add("matched");
         revealedCards = [];
+        matchedCards += 2;
       } else {
         setTimeout(() => {
-          first.classList.remove("revealed");
-          second.classList.remove("revealed");
+          img1.src = backImage;
+          img2.src = backImage;
           revealedCards = [];
         }, 2000);
       }
     }
   });
 
-  board.appendChild(card);
+  board.appendChild(button);
 });

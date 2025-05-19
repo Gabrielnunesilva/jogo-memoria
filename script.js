@@ -23,19 +23,7 @@ const imagePairs = [
   ["imgs/21.png", "imgs/2025.png"],
 ];
 
-let allImages = [];
-let pairMap = {};
-let revealedCards = [];
-let matchedCards = 0;
-let startTime = Date.now();
-let moveCount = 0;
-
-imagePairs.forEach(([a, b]) => {
-  allImages.push(a, b);
-  pairMap[a] = b;
-  pairMap[b] = a;
-});
-
+// Função para embaralhar array
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -43,6 +31,22 @@ function shuffle(array) {
   }
   return array;
 }
+
+// Seleciona 10 pares aleatórios
+const selectedPairs = shuffle([...imagePairs]).slice(0, 10);
+
+let allImages = [];
+let pairMap = {};
+let revealedCards = [];
+let matchedCards = 0;
+let moves = 0;
+let startTime = Date.now();
+
+selectedPairs.forEach(([a, b]) => {
+  allImages.push(a, b);
+  pairMap[a] = b;
+  pairMap[b] = a;
+});
 
 function updateTimer() {
   const elapsed = Math.floor((Date.now() - startTime) / 1000);
@@ -52,6 +56,8 @@ function updateTimer() {
 setInterval(updateTimer, 1000);
 
 const board = document.getElementById("game-board");
+board.innerHTML = ""; // limpa o tabuleiro
+
 shuffle(allImages).forEach(image => {
   const card = document.createElement("div");
   card.className = "card";
@@ -69,19 +75,24 @@ shuffle(allImages).forEach(image => {
 
     card.classList.add("revealed");
     revealedCards.push(card);
-    moveCount++;
 
     if (revealedCards.length === 2) {
+      moves++;
+      document.getElementById("moves").textContent = `Movimentos: ${moves}`;
+
       const [first, second] = revealedCards;
+
       if (pairMap[first.dataset.image] === second.dataset.image) {
         matchedCards += 2;
         revealedCards = [];
 
+        // Verifica se venceu
         if (matchedCards === allImages.length) {
-          const timeTaken = Math.floor((Date.now() - startTime) / 1000);
-          document.getElementById("victory-details").textContent =
-            `Tempo: ${timeTaken}s | Movimentos: ${moveCount}`;
-          document.getElementById("victory-message").classList.remove("hidden");
+          const elapsed = Math.floor((Date.now() - startTime) / 1000);
+          setTimeout(() => {
+            alert(`Você venceu!\nTempo: ${elapsed}s\nMovimentos: ${moves}`);
+            location.reload(); // reinicia o jogo
+          }, 500);
         }
       } else {
         setTimeout(() => {
@@ -95,7 +106,3 @@ shuffle(allImages).forEach(image => {
 
   board.appendChild(card);
 });
-
-function restartGame() {
-  location.reload();
-}

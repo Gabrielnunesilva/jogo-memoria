@@ -60,9 +60,14 @@ h1 {
 }
 
 .card-back {
-  background: #2d89ef;  /* cor do verso */
-  background-image: repeating-radial-gradient(circle at center, #4aa3f7 0, #2d89ef 15px);
+  background-image: url('imgs/back.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+  backface-visibility: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
+
 
 /* Estilo para a mensagem de vitória */
 #victory-message {

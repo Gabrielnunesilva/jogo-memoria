@@ -22,33 +22,34 @@ const imagePairs = [
   ["imgs/21.png", "imgs/2025.png"],
 ];
 
-const backImages = [
+const logos = [
   "imgs/logo1.png",
   "imgs/logo2.png",
   "imgs/logo3.png",
-  "imgs/logo4.png"
+  "imgs/logo4.png",
 ];
 
-// Função para embaralhar arrays
+let selectedPairs = [];
+let timerInterval = null;
+let numberOfPairs = 10; // valor padrão
+
 function shuffle(array) {
-  for (let i = array.length -1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i +1));
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
 }
 
-let timerInterval = null;
-
-function startGame(numPairs = 10) {
-  const selectedPairs = shuffle([...imagePairs]).slice(0, numPairs);
+function startGame() {
+  selectedPairs = shuffle([...imagePairs]).slice(0, numberOfPairs);
 
   const allImages = [];
   const pairMap = {};
   let revealedCards = [];
   let matchedCards = 0;
   let moves = 0;
-  let startTime = Date.now();
+  const startTime = Date.now();
 
   selectedPairs.forEach(([a, b]) => {
     allImages.push(a, b);
@@ -62,34 +63,34 @@ function startGame(numPairs = 10) {
   const victoryMessage = document.getElementById("victory-message");
   const victoryDetails = document.getElementById("victory-details");
 
-  // Ajuste da grade para 5 colunas fixas
-  board.style.gridTemplateColumns = `repeat(5, 1fr)`;
-
   board.innerHTML = "";
   victoryMessage.classList.add("hidden");
   timerDisplay.textContent = "Tempo: 0s";
   movesDisplay.textContent = "Movimentos: 0";
 
+  // Limpa o cronômetro anterior
   if (timerInterval) clearInterval(timerInterval);
-
-  // Timer
   timerInterval = setInterval(() => {
     const elapsed = Math.floor((Date.now() - startTime) / 1000);
     timerDisplay.textContent = `Tempo: ${elapsed}s`;
   }, 1000);
 
-  // Seleciona aleatoriamente um backImage para o verso das cartas
-  const backImage = backImages[Math.floor(Math.random() * backImages.length)];
+  const shuffledImages = shuffle(allImages);
+  const columns = Math.ceil(Math.sqrt(shuffledImages.length));
+  const cardElements = [];
 
-  shuffle(allImages).forEach(image => {
+  shuffledImages.forEach((image, index) => {
     const card = document.createElement("div");
     card.className = "card";
     card.dataset.image = image;
 
+    const columnIndex = index % columns;
+    const logo = logos[columnIndex % logos.length];
+
     card.innerHTML = `
       <div class="card-inner">
         <div class="card-front" style="background-image: url('${image}')"></div>
-        <div class="card-back" style="background-image: url('${backImage}')"></div>
+        <div class="card-back" style="background-image: url('${logo}')"></div>
       </div>
     `;
 
@@ -97,7 +98,8 @@ function startGame(numPairs = 10) {
       if (
         card.classList.contains("revealed") ||
         revealedCards.length === 2
-      ) return;
+      )
+        return;
 
       card.classList.add("revealed");
       revealedCards.push(card);
@@ -115,7 +117,6 @@ function startGame(numPairs = 10) {
           if (matchedCards === allImages.length) {
             clearInterval(timerInterval);
             const elapsed = Math.floor((Date.now() - startTime) / 1000);
-
             victoryDetails.textContent = `Tempo: ${elapsed}s | Movimentos: ${moves}`;
             victoryMessage.classList.remove("hidden");
           }
@@ -124,18 +125,30 @@ function startGame(numPairs = 10) {
             first.classList.remove("revealed");
             second.classList.remove("revealed");
             revealedCards = [];
-          }, 1500);
+          }, 2000);
         }
       }
     });
 
-    board.appendChild(card);
+    cardElements.push(card);
   });
+
+  // Adiciona ao tabuleiro
+  cardElements.forEach(card => board.appendChild(card));
 }
 
-// Inicia jogo padrão ao carregar a página
+function restartGame() {
+  startGame();
+}
+
+function setPairs(n) {
+  numberOfPairs = n;
+  startGame();
+}
+
 window.onload = () => {
-  const victoryMessage = document.getElementById("victory-message");
-  victoryMessage.classList.add("hidden");
-  startGame(10);
+  document.getElementById("btn-5").addEventListener("click", () => setPairs(5));
+  document.getElementById("btn-10").addEventListener("click", () => setPairs(10));
+  document.getElementById("btn-20").addEventListener("click", () => setPairs(20));
+  startGame();
 };

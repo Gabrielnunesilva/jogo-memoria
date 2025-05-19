@@ -29,7 +29,7 @@ const backImages = [
   "imgs/logo4.png"
 ];
 
-// Função para embaralhar array
+// Embaralha o array
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -38,14 +38,13 @@ function shuffle(array) {
   return array;
 }
 
-let selectedPairs = [];
 let timerInterval = null;
 
 function startGame(numPairs = 10) {
-  selectedPairs = shuffle([...imagePairs]).slice(0, numPairs);
+  const selectedPairs = shuffle([...imagePairs]).slice(0, numPairs);
 
-  let allImages = [];
-  let pairMap = {};
+  const allImages = [];
+  const pairMap = {};
   let revealedCards = [];
   let matchedCards = 0;
   let moves = 0;
@@ -63,8 +62,19 @@ function startGame(numPairs = 10) {
   const victoryMessage = document.getElementById("victory-message");
   const victoryDetails = document.getElementById("victory-details");
 
+  // Ajusta grid columns conforme número de pares para um layout bom
+  let columns = 5;
+  if (numPairs <= 5) {
+    columns = 5;
+  } else if (numPairs <= 10) {
+    columns = 5;
+  } else {
+    columns = 5;
+  }
+  board.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+
   board.innerHTML = "";
-  victoryMessage.classList.add("hidden"); // garante que começa escondido
+  victoryMessage.classList.add("hidden");
   timerDisplay.textContent = "Tempo: 0s";
   movesDisplay.textContent = "Movimentos: 0";
 
@@ -76,10 +86,10 @@ function startGame(numPairs = 10) {
     timerDisplay.textContent = `Tempo: ${elapsed}s`;
   }, 1000);
 
-  // Escolhe uma imagem back aleatória para este jogo
+  // Seleciona aleatoriamente um backImage para este jogo
   const backImage = backImages[Math.floor(Math.random() * backImages.length)];
 
-  shuffle(allImages).forEach((image, index) => {
+  shuffle(allImages).forEach(image => {
     const card = document.createElement("div");
     card.className = "card";
     card.dataset.image = image;
@@ -122,7 +132,7 @@ function startGame(numPairs = 10) {
             first.classList.remove("revealed");
             second.classList.remove("revealed");
             revealedCards = [];
-          }, 2000);
+          }, 1500);
         }
       }
     });
@@ -131,14 +141,9 @@ function startGame(numPairs = 10) {
   });
 }
 
-// Função para reiniciar o jogo
-function restartGame() {
-  startGame();
-}
-
 // Começa o jogo ao carregar a página
 window.onload = () => {
   const victoryMessage = document.getElementById("victory-message");
-  victoryMessage.classList.add("hidden"); // escondido ao carregar
-  startGame();
+  victoryMessage.classList.add("hidden");
+  startGame(10);
 };

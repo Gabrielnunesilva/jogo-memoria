@@ -22,6 +22,8 @@ const imagePairs = [
   ["imgs/21.png", "imgs/2025.png"],
 ];
 
+let timerInterval = null;
+
 let currentPairCount = 10; // padrão
 
 function shuffle(array) {
@@ -60,10 +62,14 @@ function startGame(pairCount = currentPairCount) {
   timerDisplay.textContent = "Tempo: 0s";
   movesDisplay.textContent = "Movimentos: 0";
 
-  let timerInterval = setInterval(() => {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+  }
+  timerInterval = setInterval(() => {
     const elapsed = Math.floor((Date.now() - startTime) / 1000);
     timerDisplay.textContent = `Tempo: ${elapsed}s`;
   }, 1000);
+
 
   shuffle(allImages).forEach(image => {
     const card = document.createElement("div");

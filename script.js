@@ -29,10 +29,9 @@ const logos = [
   "imgs/logo4.png",
 ];
 
+let numberOfPairs = 8; // padrão
 let selectedPairs = [];
 let timerInterval = null;
-let numberOfPairs = 10;
-let currentBackLogo = null;
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -44,7 +43,8 @@ function shuffle(array) {
 
 function startGame() {
   selectedPairs = shuffle([...imagePairs]).slice(0, numberOfPairs);
-  currentBackLogo = logos[Math.floor(Math.random() * logos.length)];
+
+  const selectedLogo = logos[Math.floor(Math.random() * logos.length)];
 
   const allImages = [];
   const pairMap = {};
@@ -65,6 +65,11 @@ function startGame() {
   const victoryMessage = document.getElementById("victory-message");
   const victoryDetails = document.getElementById("victory-details");
 
+  // Define colunas fixas com base no número de pares
+  let cols = 4;
+  if (numberOfPairs === 16) cols = 6;
+  board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
   board.innerHTML = "";
   victoryMessage.classList.add("hidden");
   timerDisplay.textContent = "Tempo: 0s";
@@ -76,10 +81,7 @@ function startGame() {
     timerDisplay.textContent = `Tempo: ${elapsed}s`;
   }, 1000);
 
-  const shuffledImages = shuffle(allImages);
-  const cardElements = [];
-
-  shuffledImages.forEach((image) => {
+  shuffle(allImages).forEach((image) => {
     const card = document.createElement("div");
     card.className = "card";
     card.dataset.image = image;
@@ -87,7 +89,7 @@ function startGame() {
     card.innerHTML = `
       <div class="card-inner">
         <div class="card-front" style="background-image: url('${image}')"></div>
-        <div class="card-back" style="background-image: url('${currentBackLogo}')"></div>
+        <div class="card-back" style="background-image: url('${selectedLogo}')"></div>
       </div>
     `;
 
@@ -95,8 +97,7 @@ function startGame() {
       if (
         card.classList.contains("revealed") ||
         revealedCards.length === 2
-      )
-        return;
+      ) return;
 
       card.classList.add("revealed");
       revealedCards.push(card);
@@ -104,7 +105,6 @@ function startGame() {
       if (revealedCards.length === 2) {
         moves++;
         movesDisplay.textContent = `Movimentos: ${moves}`;
-
         const [first, second] = revealedCards;
 
         if (pairMap[first.dataset.image] === second.dataset.image) {
@@ -127,10 +127,8 @@ function startGame() {
       }
     });
 
-    cardElements.push(card);
+    board.appendChild(card);
   });
-
-  cardElements.forEach(card => board.appendChild(card));
 }
 
 function restartGame() {
@@ -143,8 +141,8 @@ function setPairs(n) {
 }
 
 window.onload = () => {
-  document.getElementById("btn-5").addEventListener("click", () => setPairs(4));
-  document.getElementById("btn-10").addEventListener("click", () => setPairs(8));
-  document.getElementById("btn-20").addEventListener("click", () => setPairs(16));
+  document.getElementById("btn-4").addEventListener("click", () => setPairs(4));
+  document.getElementById("btn-8").addEventListener("click", () => setPairs(8));
+  document.getElementById("btn-16").addEventListener("click", () => setPairs(16));
   startGame();
 };

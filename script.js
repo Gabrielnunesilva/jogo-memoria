@@ -143,8 +143,8 @@ function setPairs(n) {
 }
 
 window.onload = () => {
-  document.getElementById("btn-5").addEventListener("click", () => setPairs(5));
-  document.getElementById("btn-10").addEventListener("click", () => setPairs(10));
-  document.getElementById("btn-20").addEventListener("click", () => setPairs(20));
+  document.getElementById("btn-5").addEventListener("click", () => setPairs(4));
+  document.getElementById("btn-10").addEventListener("click", () => setPairs(8));
+  document.getElementById("btn-20").addEventListener("click", () => setPairs(16));
   startGame();
 };

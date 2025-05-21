@@ -64,6 +64,13 @@ function startGame() {
   const victoryDetails = document.getElementById("victory-details");
 
   board.innerHTML = "";
+  board.className = ""; // limpa classes antigas
+
+  // Aplica a classe correta para o grid funcionar
+  if (numberOfPairs === 4) board.classList.add("fixed-4");
+  else if (numberOfPairs === 8) board.classList.add("fixed-8");
+  else if (numberOfPairs === 16) board.classList.add("fixed-16");
+
   victoryMessage.classList.add("hidden");
   timerDisplay.textContent = "Tempo: 0s";
   movesDisplay.textContent = "Movimentos: 0";

@@ -19,44 +19,21 @@ const imagePairs = [
   ["imgs/18.png", "imgs/2014.png"],
   ["imgs/19.png", "imgs/2016.png"],
   ["imgs/20.png", "imgs/2022.png"],
-  ["imgs/21.png", "imgs/2025.png"]
+  ["imgs/21.png", "imgs/2025.png"],
 ];
 
-// Imagens de back por coluna
-const backImages = [
+const logos = [
   "imgs/logo1.png",
   "imgs/logo2.png",
   "imgs/logo3.png",
-  "imgs/logo4.png"
+  "imgs/logo4.png",
 ];
 
-// Função para obter o índice da coluna
-function getColumnIndex(index, columns) {
-  return index % columns;
-}
+let selectedPairs = [];
+let timerInterval = null;
+let numberOfPairs = 10;
+let currentBackLogo = null;
 
-const board = document.getElementById("game-board");
-let flippedCards = [];
-let matchedCards = 0;
-
-// Escolher pares aleatórios com base na quantidade de pares desejada
-function generateRandomPairs(numPairs) {
-  const selectedPairs = imagePairs.slice(0, numPairs);
-  const cards = [];
-
-  selectedPairs.forEach((pair, index) => {
-    pair.forEach((image) => {
-      cards.push({
-        id: index,
-        image: image
-      });
-    });
-  });
-
-  return shuffle(cards);
-}
-
-// Embaralhar array
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -65,73 +42,109 @@ function shuffle(array) {
   return array;
 }
 
-// Criar cartas no tabuleiro
-function createBoard(numPairs) {
+function startGame() {
+  selectedPairs = shuffle([...imagePairs]).slice(0, numberOfPairs);
+  currentBackLogo = logos[Math.floor(Math.random() * logos.length)];
+
+  const allImages = [];
+  const pairMap = {};
+  let revealedCards = [];
+  let matchedCards = 0;
+  let moves = 0;
+  const startTime = Date.now();
+
+  selectedPairs.forEach(([a, b]) => {
+    allImages.push(a, b);
+    pairMap[a] = b;
+    pairMap[b] = a;
+  });
+
+  const board = document.getElementById("game-board");
+  const timerDisplay = document.getElementById("timer");
+  const movesDisplay = document.getElementById("moves");
+  const victoryMessage = document.getElementById("victory-message");
+  const victoryDetails = document.getElementById("victory-details");
+
   board.innerHTML = "";
-  matchedCards = 0;
-  const cards = generateRandomPairs(numPairs);
-  const numColumns = 4; // Altere se seu tabuleiro tiver outro número de colunas
+  victoryMessage.classList.add("hidden");
+  timerDisplay.textContent = "Tempo: 0s";
+  movesDisplay.textContent = "Movimentos: 0";
 
-  cards.forEach((card, i) => {
-    const cardElement = document.createElement("div");
-    cardElement.classList.add("memory-card");
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    timerDisplay.textContent = `Tempo: ${elapsed}s`;
+  }, 1000);
 
-    const cardFront = document.createElement("img");
-    cardFront.classList.add("front-face");
-    cardFront.src = card.image;
+  const shuffledImages = shuffle(allImages);
+  const cardElements = [];
 
-    const cardBack = document.createElement("img");
-    cardBack.classList.add("back-face");
-    const coluna = getColumnIndex(i, numColumns);
-    cardBack.src = backImages[coluna];
+  shuffledImages.forEach((image) => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.dataset.image = image;
 
-    cardElement.appendChild(cardFront);
-    cardElement.appendChild(cardBack);
+    card.innerHTML = `
+      <div class="card-inner">
+        <div class="card-front" style="background-image: url('${image}')"></div>
+        <div class="card-back" style="background-image: url('${currentBackLogo}')"></div>
+      </div>
+    `;
 
-    cardElement.dataset.id = card.id;
+    card.addEventListener("click", () => {
+      if (
+        card.classList.contains("revealed") ||
+        revealedCards.length === 2
+      )
+        return;
 
-    cardElement.addEventListener("click", flipCard);
+      card.classList.add("revealed");
+      revealedCards.push(card);
 
-    board.appendChild(cardElement);
-  });
-}
+      if (revealedCards.length === 2) {
+        moves++;
+        movesDisplay.textContent = `Movimentos: ${moves}`;
 
-// Lógica de virar carta
-function flipCard() {
-  if (this.classList.contains("flip") || flippedCards.length === 2) return;
+        const [first, second] = revealedCards;
 
-  this.classList.add("flip");
-  flippedCards.push(this);
+        if (pairMap[first.dataset.image] === second.dataset.image) {
+          matchedCards += 2;
+          revealedCards = [];
 
-  if (flippedCards.length === 2) {
-    const [card1, card2] = flippedCards;
-    const isMatch = card1.dataset.id === card2.dataset.id;
-
-    if (isMatch) {
-      matchedCards += 2;
-      flippedCards = [];
-
-      if (matchedCards === parseInt(document.getElementById("pair-count").value) * 2) {
-        setTimeout(() => alert("Parabéns! Você completou o jogo!"), 500);
+          if (matchedCards === allImages.length) {
+            clearInterval(timerInterval);
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            victoryDetails.textContent = `Tempo: ${elapsed}s | Movimentos: ${moves}`;
+            victoryMessage.classList.remove("hidden");
+          }
+        } else {
+          setTimeout(() => {
+            first.classList.remove("revealed");
+            second.classList.remove("revealed");
+            revealedCards = [];
+          }, 2000);
+        }
       }
-    } else {
-      setTimeout(() => {
-        card1.classList.remove("flip");
-        card2.classList.remove("flip");
-        flippedCards = [];
-      }, 1000);
-    }
-  }
-}
+    });
 
-window.addEventListener("DOMContentLoaded", () => {
-  // Iniciar o jogo
-  document.getElementById("start-btn").addEventListener("click", () => {
-    const numPairs = parseInt(document.getElementById("pair-count").value);
-    createBoard(numPairs);
+    cardElements.push(card);
   });
 
-  // Criar tabuleiro inicial com 6 pares (opcional)
-  createBoard(6);
-});
+  cardElements.forEach(card => board.appendChild(card));
+}
 
+function restartGame() {
+  startGame();
+}
+
+function setPairs(n) {
+  numberOfPairs = n;
+  startGame();
+}
+
+window.onload = () => {
+  document.getElementById("btn-5").addEventListener("click", () => setPairs(4));
+  document.getElementById("btn-10").addEventListener("click", () => setPairs(8));
+  document.getElementById("btn-20").addEventListener("click", () => setPairs(16));
+  startGame();
+};

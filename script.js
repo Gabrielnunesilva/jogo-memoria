@@ -66,9 +66,16 @@ function startGame() {
   const victoryDetails = document.getElementById("victory-details");
 
   // Define colunas fixas com base no número de pares
-  let cols = 4;
-  if (numberOfPairs === 16) cols = 6;
-  board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  // Remove classes antigas
+  board.classList.remove("fixed-4", "fixed-8", "fixed-16");
+
+  // Se for PC, aplica classe fixa conforme número de pares
+  if (window.innerWidth >= 768) {
+    if (numberOfPairs === 4) board.classList.add("fixed-4");
+    else if (numberOfPairs === 8) board.classList.add("fixed-8");
+    else if (numberOfPairs === 16) board.classList.add("fixed-16");
+  }
+
 
   board.innerHTML = "";
   victoryMessage.classList.add("hidden");

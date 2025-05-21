@@ -32,7 +32,6 @@ const logos = [
 let selectedPairs = [];
 let timerInterval = null;
 let numberOfPairs = 10;
-let currentBackLogo = null;
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -44,7 +43,6 @@ function shuffle(array) {
 
 function startGame() {
   selectedPairs = shuffle([...imagePairs]).slice(0, numberOfPairs);
-  currentBackLogo = logos[Math.floor(Math.random() * logos.length)];
 
   const allImages = [];
   const pairMap = {};
@@ -78,8 +76,12 @@ function startGame() {
 
   const shuffledImages = shuffle(allImages);
   const cardElements = [];
+  const columns = 4; // fixo conforme seu layout
 
-  shuffledImages.forEach((image) => {
+  shuffledImages.forEach((image, index) => {
+    const columnIndex = index % columns;
+    const backLogo = logos[columnIndex % logos.length];
+
     const card = document.createElement("div");
     card.className = "card";
     card.dataset.image = image;
@@ -87,7 +89,7 @@ function startGame() {
     card.innerHTML = `
       <div class="card-inner">
         <div class="card-front" style="background-image: url('${image}')"></div>
-        <div class="card-back" style="background-image: url('${currentBackLogo}')"></div>
+        <div class="card-back" style="background-image: url('${backLogo}')"></div>
       </div>
     `;
 
@@ -143,8 +145,8 @@ function setPairs(n) {
 }
 
 window.onload = () => {
-  document.getElementById("btn-5").addEventListener("click", () => setPairs(4));
-  document.getElementById("btn-10").addEventListener("click", () => setPairs(8));
-  document.getElementById("btn-20").addEventListener("click", () => setPairs(16));
+  document.getElementById("btn-4").addEventListener("click", () => setPairs(4));
+  document.getElementById("btn-8").addEventListener("click", () => setPairs(8));
+  document.getElementById("btn-16").addEventListener("click", () => setPairs(16));
   startGame();
 };

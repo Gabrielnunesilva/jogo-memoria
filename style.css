@@ -27,20 +27,26 @@ h1 {
 
 #game-board {
   display: grid;
-  gap: 1mm; /* espaçamento mínimo */
+  gap: 1mm;
   justify-content: center;
   margin: 20px auto;
+  max-width: 90vw;
 }
 
-/* Desktop: 4, 8 ou 16 pares - definir via classes dinâmicas */
 #game-board.cols-4 {
   grid-template-columns: repeat(4, 1fr);
 }
+
 #game-board.cols-8 {
   grid-template-columns: repeat(8, 1fr);
 }
 
-/* Mobile: sempre 4 colunas */
+.card {
+  width: 100px;
+  height: 100px;
+  perspective: 1000px;
+}
+
 @media (max-width: 768px) {
   #game-board {
     grid-template-columns: repeat(4, 1fr) !important;

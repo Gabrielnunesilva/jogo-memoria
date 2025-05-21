@@ -29,9 +29,26 @@ h1 {
   display: grid;
   gap: 10px;
   justify-content: center;
-  max-width: 600px;
+  max-width: 100%;
   margin: 20px auto;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
 }
+
+@media (min-width: 768px) {
+  /* No PC, controlado via JS */
+  #game-board.fixed-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  #game-board.fixed-8 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  #game-board.fixed-16 {
+    grid-template-columns: repeat(8, 1fr);
+  }
+}
+
 
 .card {
   width: 100px;

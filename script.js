@@ -44,8 +44,6 @@ function shuffle(array) {
 
 function startGame() {
   selectedPairs = shuffle([...imagePairs]).slice(0, numberOfPairs);
-  currentBackLogo = logos[Math.floor(Math.random() * logos.length)];
-
   const allImages = [];
   const pairMap = {};
   let revealedCards = [];
@@ -66,6 +64,7 @@ function startGame() {
   const victoryDetails = document.getElementById("victory-details");
 
   board.innerHTML = "";
+  board.className = ""; // limpa classes anteriores
   victoryMessage.classList.add("hidden");
   timerDisplay.textContent = "Tempo: 0s";
   movesDisplay.textContent = "Movimentos: 0";
@@ -79,7 +78,20 @@ function startGame() {
   const shuffledImages = shuffle(allImages);
   const cardElements = [];
 
-  shuffledImages.forEach((image) => {
+  const columns = window.innerWidth <= 768 ? 4 : numberOfPairs === 16 ? 8 : 4;
+  board.classList.add(`cols-${columns}`);
+
+  const backLogos = shuffle([...logos]);
+  const logosPerCol = [];
+
+  for (let i = 0; i < columns; i++) {
+    logosPerCol.push(backLogos[i % backLogos.length]);
+  }
+
+  shuffledImages.forEach((image, index) => {
+    const col = index % columns;
+    const backLogo = logosPerCol[col];
+
     const card = document.createElement("div");
     card.className = "card";
     card.dataset.image = image;
@@ -87,7 +99,7 @@ function startGame() {
     card.innerHTML = `
       <div class="card-inner">
         <div class="card-front" style="background-image: url('${image}')"></div>
-        <div class="card-back" style="background-image: url('${currentBackLogo}')"></div>
+        <div class="card-back" style="background-image: url('${backLogo}')"></div>
       </div>
     `;
 
@@ -132,6 +144,7 @@ function startGame() {
 
   cardElements.forEach(card => board.appendChild(card));
 }
+
 
 function restartGame() {
   startGame();

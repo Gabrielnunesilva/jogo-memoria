@@ -124,11 +124,14 @@ function flipCard() {
   }
 }
 
-// Iniciar o jogo
-document.getElementById("start-btn").addEventListener("click", () => {
-  const numPairs = parseInt(document.getElementById("pair-count").value);
-  createBoard(numPairs);
+window.addEventListener("DOMContentLoaded", () => {
+  // Iniciar o jogo
+  document.getElementById("start-btn").addEventListener("click", () => {
+    const numPairs = parseInt(document.getElementById("pair-count").value);
+    createBoard(numPairs);
+  });
+
+  // Criar tabuleiro inicial com 6 pares (opcional)
+  createBoard(6);
 });
 
-// Criar tabuleiro inicial com 6 pares (opcional)
-createBoard(6);

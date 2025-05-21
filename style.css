@@ -27,31 +27,21 @@ h1 {
 
 #game-board {
   display: grid;
-  gap: 4px; /* Aproximadamente 1mm */
+  gap: 1mm; /* espaçamento mínimo */
   justify-content: center;
   margin: 20px auto;
 }
 
-/* Layout dinâmico com base na quantidade de pares */
+/* Desktop: 4, 8 ou 16 pares - definir via classes dinâmicas */
 #game-board.cols-4 {
   grid-template-columns: repeat(4, 1fr);
-  max-width: calc(4 * 100px + 3 * 4px);
 }
-
 #game-board.cols-8 {
   grid-template-columns: repeat(8, 1fr);
-  max-width: calc(8 * 100px + 7 * 4px);
 }
 
-/* Cartas padrão */
-.card {
-  width: 100px;
-  height: 100px;
-  perspective: 1000px;
-}
-
-/* Cartas menores no celular */
-@media (max-width: 600px) {
+/* Mobile: sempre 4 colunas */
+@media (max-width: 768px) {
   #game-board {
     grid-template-columns: repeat(4, 1fr) !important;
   }
@@ -61,6 +51,7 @@ h1 {
     height: 70px;
   }
 }
+
 
 .card-inner {
   position: relative;

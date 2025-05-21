@@ -27,15 +27,26 @@ h1 {
 
 #game-board {
   display: grid;
-  gap: 10px;
+  gap: 1px;
   justify-content: center;
   max-width: 100%;
   margin: 20px auto;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
 }
 
+/* Celular: sempre 4 colunas */
+@media (max-width: 767px) {
+  #game-board {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .card {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+/* PC: colunas fixas por classe */
 @media (min-width: 768px) {
-  /* No PC, controlado via JS */
   #game-board.fixed-4 {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -47,7 +58,13 @@ h1 {
   #game-board.fixed-16 {
     grid-template-columns: repeat(8, 1fr);
   }
+
+  .card {
+    width: 100px;
+    height: 100px;
+  }
 }
+
 
 
 .card {

@@ -30,10 +30,9 @@ h1 {
   justify-content: center;
   max-width: 100%;
   margin: 20px auto;
-  gap: 1px; /* espaço mínimo entre cartas */
+  gap: 1px;
 }
 
-/* Cartas */
 .card {
   width: 100%;
   aspect-ratio: 1 / 1;
@@ -63,18 +62,15 @@ h1 {
   background-position: center;
 }
 
-/* Frente da carta (imagem do par) */
 .card-front {
   transform: rotateY(180deg);
 }
 
-/* Verso da carta (logo) */
 .card-back {
   transform: rotateY(0deg);
   background-color: #444;
 }
 
-/* Modal de vitória */
 #victory-message {
   position: fixed;
   top: 0;
@@ -109,7 +105,6 @@ h1 {
   cursor: pointer;
 }
 
-/* Grid fixo no celular: sempre 4 colunas */
 @media (max-width: 767px) {
   #game-board {
     grid-template-columns: repeat(4, 1fr);
@@ -121,7 +116,6 @@ h1 {
   }
 }
 
-/* Grid fixo no PC: 4 ou 8 colunas, conforme classe */
 @media (min-width: 768px) {
   #game-board.fixed-4 {
     grid-template-columns: repeat(4, 1fr);
